@@ -1,4 +1,5 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
+from django.http import HttpResponse
 from .models import Product
 
 def product_list(request):
@@ -6,5 +7,8 @@ def product_list(request):
     return render(request, 'product_list.html', {'products': products})
 
 def product_detail(request, id):
-    product = get_object_or_404(Product, id=id)
-    return render(request, 'product_detail.html', {'product': product})
+    product = Product.objects.filter(id=id).first()
+    if product is None:
+        return HttpResponse('Product not found.')
+
+    return render(request, 'product_details.html', {'product':product})
